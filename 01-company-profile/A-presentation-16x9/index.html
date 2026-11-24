@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>LA'MONS INTERNATIONAL — Présentation corporate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/brand.css">
+<style>
+  /* Base 1920 × 1080, mise à l'échelle par JS. Impression : 1 slide = 1 page. */
+  @page { size: 1920px 1080px; margin: 0; }
+  html, body { height: 100%; background: #0a0a0a; overflow: hidden; }
+  body { font-size: 26px; line-height: 1.45; }
+  .deck { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; }
+  .slide { position: absolute; inset: 0; background: #fff; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility .45s; }
+  .slide.active { opacity: 1; visibility: visible; }
+  @media print {
+    html, body { height: auto; overflow: visible; background: none; }
+    .deck { position: static; transform: none !important; }
+    .slide { position: relative; opacity: 1; visibility: visible; width: 1920px; height: 1080px; break-after: page; page-break-after: always; transition: none; }
+    .ui { display: none !important; }
+  }
+
+  .on-dark { background: var(--ink); color: #fff; }
+  .eyebrow { font-size: 17px; }
+  h2 { font-size: 84px; line-height: 1; font-weight: 800; letter-spacing: -.03em; }
+  h3 { font-size: 32px; font-weight: 700; letter-spacing: -.01em; line-height: 1.15; }
+  .lead { font-size: 32px; line-height: 1.4; font-weight: 400; letter-spacing: -.01em; }
+  .muted { color: var(--grey); }
+  .chrome { position: absolute; left: 96px; right: 96px; bottom: 44px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); z-index: 5; }
+  .on-dark .chrome, .chrome.light { color: rgba(255,255,255,.55); }
+  .chrome img { height: 34px; }
+  .abs { position: absolute; }
+
+  /* UI */
+  .ui { position: fixed; z-index: 50; font-family: var(--mono); }
+  .progress { left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255,255,255,.08); }
+  .progress i { display: block; height: 100%; width: 0; background: var(--orange); transition: width .35s ease; }
+  .counter { right: 20px; bottom: 14px; color: rgba(255,255,255,.5); font-size: 12px; letter-spacing: .12em; }
+  .hint { left: 20px; bottom: 14px; color: rgba(255,255,255,.35); font-size: 12px; letter-spacing: .08em; transition: opacity .6s; }
+  .navbtn { top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: 0; background: rgba(255,255,255,.06); color: #fff; font-size: 20px; cursor: pointer; opacity: 0; transition: opacity .2s; }
+  body:hover .navbtn { opacity: .7; }
+  .navbtn:hover { opacity: 1 !important; background: var(--orange); }
+  .prev { left: 12px; } .next { right: 12px; }
+
+  /* 01 Cover */
+  .s-cover .ph { position: absolute; right: 0; top: 0; bottom: 0; width: 1000px; }
+  .s-cover .left { position: absolute; left: 0; top: 0; bottom: 0; width: 920px; padding: 96px; }
+  .s-cover .logo-box { position: absolute; left: 96px; top: 0; background: #fff; padding: 34px 34px 28px; }
+  .s-cover .logo-box img { width: 250px; }
+  .s-cover h1 { position: absolute; left: 96px; bottom: 170px; font-size: 128px; line-height: .92; letter-spacing: -.04em; font-weight: 800; font-variation-settings: 'wdth' 88; }
+  .s-cover h1 em { font-style: normal; color: var(--orange); }
+  .s-cover .sub { position: absolute; left: 96px; top: 330px; }
+  .s-cover .sub div { font-size: 30px; font-weight: 300; margin-top: 16px; color: rgba(255,255,255,.85); }
+  .s-cover .tile { width: 230px; left: 820px; top: 110px; z-index: 2; font-size: 30px; }
+  .s-cover .bar4 { position: absolute; left: 0; bottom: 0; width: 920px; height: 10px; }
+
+  /* 02 Qui */
+  .s-qui .ph { position: absolute; left: 0; top: 0; bottom: 0; width: 760px; }
+  .s-qui .t { position: absolute; left: 860px; right: 96px; top: 120px; }
+  .s-qui h2 { font-size: 68px; margin: 34px 0 40px; }
+  .s-qui .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; margin-top: 44px; font-size: 22px; }
+
+  /* 03 Chiffres */
+  .s-num .t { position: absolute; left: 96px; top: 110px; }
+  .s-num .grid { position: absolute; left: 96px; right: 96px; bottom: 150px; display: grid; grid-template-columns: repeat(4,1fr); }
+  .s-num .grid div { border-top: 1px solid rgba(255,255,255,.3); padding: 30px 30px 0 0; }
+  .s-num .grid div + div { padding-left: 30px; border-left: 1px solid rgba(255,255,255,.15); }
+  .s-num b { font-size: 150px; font-weight: 800; letter-spacing: -.05em; line-height: .9; display: block; color: var(--orange); }
+  .s-num span { font-size: 22px; color: rgba(255,255,255,.72); display: block; margin-top: 18px; }
+  .s-num .tile { width: 300px; right: -60px; top: -60px; font-size: 40px; }
+
+  /* 04 Devise */
+  .s-devise h2 { position: absolute; left: 96px; top: 250px; font-size: 200px; line-height: .88; letter-spacing: -.05em; font-variation-settings: 'wdth' 85; }
+  .s-devise p { position: absolute; left: 96px; bottom: 140px; width: 760px; font-size: 24px; color: rgba(255,255,255,.7); }
+  .s-devise .eyebrow { position: absolute; left: 96px; top: 110px; }
+  .s-devise .tile { width: 420px; right: 140px; bottom: 150px; font-size: 50px; }
+
+  /* 05 Mission */
+  .s-mission .t { position: absolute; left: 96px; top: 110px; right: 96px; display: flex; justify-content: space-between; align-items: end; }
+  .s-mission .grid { position: absolute; left: 96px; right: 96px; top: 400px; display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; }
+  .s-mission .grid div { border-top: 3px solid var(--ink); padding-top: 26px; }
+  .s-mission .n { font-family: var(--mono); font-size: 18px; color: var(--orange); }
+  .s-mission h3 { margin: 14px 0 16px; font-size: 36px; }
+  .s-mission p { font-size: 22px; color: var(--ink-3); }
+  .s-mission .obj { position: absolute; left: 0; right: 0; bottom: 0; height: 230px; background: var(--sand); padding: 54px 96px; display: grid; grid-template-columns: 300px 1fr; gap: 40px; }
+  .s-mission .obj p { font-size: 28px; line-height: 1.4; }
+
+  /* 06 Couleurs */
+  .s-col .t { position: absolute; left: 96px; top: 110px; width: 620px; }
+  .s-col .t h2 { font-size: 72px; margin: 30px 0 50px; }
+  .s-col .vals div { border-top: 2px solid var(--ink); padding: 18px 0 26px; font-size: 28px; font-weight: 700; }
+  .s-col .sw { position: absolute; top: 0; bottom: 0; width: 260px; padding: 48px 36px 110px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .s-col .sw .hex { font-family: var(--mono); font-size: 15px; letter-spacing: .1em; margin-bottom: auto; margin-top: 60px; opacity: .8; }
+  .s-col .sw b { font-size: 42px; margin-bottom: 14px; }
+  .s-col .sw p { font-size: 19px; line-height: 1.4; }
+  .s-col .sw.k { left: 840px; background: var(--ink); color: #fff; }
+  .s-col .sw.w { left: 1100px; background: #fff; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .s-col .sw.o { left: 1360px; background: var(--orange); color: #fff; }
+  .s-col .sw.r { left: 1620px; width: 300px; background: var(--rose); color: #fff; }
+
+  /* 07 Métiers */
+  .s-met .t { position: absolute; left: 96px; right: 96px; top: 100px; display: flex; justify-content: space-between; align-items: end; }
+  .s-met .t p { width: 560px; font-size: 22px; }
+  .s-met .t h2 { font-size: 72px; }
+  .s-met .grid { position: absolute; left: 96px; right: 96px; top: 380px; bottom: 120px; display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; }
+  .s-met .ph { height: 250px; }
+  .s-met .n { font-family: var(--mono); font-size: 16px; color: var(--orange); display: block; margin-top: 24px; letter-spacing: .1em; }
+  .s-met h3 { margin: 6px 0 14px; }
+  .s-met li { list-style: none; border-top: 1px solid var(--line); padding: 9px 0; font-size: 21px; font-weight: 600; }
+
+  /* Pôles */
+  .s-pole .ph.side { position: absolute; left: 0; top: 0; bottom: 0; width: 760px; }
+  .s-pole .ph.side::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(13,13,13,.9), rgba(13,13,13,0) 55%); }
+  .s-pole .ph.side .t { position: absolute; left: 80px; right: 60px; bottom: 120px; color: #fff; z-index: 2; }
+  .s-pole .ph.side h2 { font-size: 72px; margin-top: 20px; }
+  .s-pole .body { position: absolute; left: 860px; right: 96px; top: 100px; bottom: 120px; display: flex; flex-direction: column; justify-content: center; }
+  .s-pole .svc { display: grid; grid-template-columns: 60px 1fr; gap: 0 20px; border-top: 2px solid var(--ink); padding: 26px 0 30px; }
+  .s-pole .svc .n { font-family: var(--mono); font-size: 16px; color: var(--orange); padding-top: 10px; }
+  .s-pole .svc p { font-size: 22px; color: var(--ink-3); margin-top: 8px; }
+  .s-pole.compact .svc { padding: 18px 0 20px; }
+  .s-pole.compact .svc p { font-size: 20px; margin-top: 4px; }
+
+  /* Énergie */
+  .s-nrj .ph { position: absolute; inset: 0; }
+  .s-nrj .ph::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,13,13,.94), rgba(13,13,13,.7) 50%, rgba(13,13,13,.15)); }
+  .s-nrj .t { position: absolute; left: 96px; top: 110px; width: 980px; z-index: 2; }
+  .s-nrj h2 { font-size: 100px; margin: 34px 0 34px; letter-spacing: -.04em; font-variation-settings: 'wdth' 88; }
+  .s-nrj .lead { color: rgba(255,255,255,.82); font-size: 27px; }
+  .s-nrj .kpis { position: absolute; left: 96px; right: 96px; bottom: 120px; display: grid; grid-template-columns: repeat(4,1fr); z-index: 2; }
+  .s-nrj .kpis div { border-top: 1px solid rgba(255,255,255,.4); padding: 24px 24px 0 0; }
+  .s-nrj .kpis b { font-size: 76px; font-weight: 800; letter-spacing: -.04em; color: var(--orange); display: block; line-height: 1; }
+  .s-nrj .kpis span { font-size: 20px; color: rgba(255,255,255,.8); display: block; margin-top: 10px; }
+
+  .s-refs .t { position: absolute; left: 96px; top: 110px; width: 560px; }
+  .s-refs .t h2 { font-size: 64px; margin: 30px 0 30px; }
+  .s-refs ol { position: absolute; left: 760px; right: 96px; top: 110px; list-style: none; counter-reset: r; }
+  .s-refs li { counter-increment: r; display: grid; grid-template-columns: 90px 1fr; border-top: 1px solid rgba(255,255,255,.22); padding: 40px 0; font-size: 30px; line-height: 1.35; }
+  .s-refs li::before { content: counter(r, decimal-leading-zero); font-family: var(--mono); font-size: 18px; color: var(--rose); padding-top: 6px; }
+  .s-refs .note { position: absolute; left: 96px; width: 560px; bottom: 130px; font-size: 18px; color: rgba(255,255,255,.5); }
+
+  /* Services */
+  .s-srv .t { position: absolute; left: 96px; top: 100px; width: 600px; }
+  .s-srv .t h2 { font-size: 64px; margin: 30px 0 28px; }
+  .s-srv .t p { font-size: 22px; }
+  .s-srv .grid { position: absolute; left: 780px; right: 96px; top: 100px; bottom: 120px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; align-content: start; }
+  .s-srv .grp { border-top: 3px solid var(--ink); padding-top: 14px; margin-bottom: 40px; }
+  .s-srv .grp h3 { font-size: 24px; display: flex; justify-content: space-between; }
+  .s-srv .grp h3 span { font-family: var(--mono); font-size: 15px; color: var(--orange); font-weight: 500; }
+  .s-srv .grp li { list-style: none; font-size: 21px; padding: 11px 0 11px 22px; border-bottom: 1px solid var(--line); position: relative; line-height: 1.35; }
+  .s-srv .grp li::before { content: ''; position: absolute; left: 0; top: 21px; width: 8px; height: 8px; background: var(--orange); transform: rotate(-14deg); }
+  .s-srv .ph { position: absolute; left: 96px; width: 600px; bottom: 120px; height: 420px; }
+
+  /* Talents */
+  .s-tal .ph { position: absolute; right: 0; top: 0; bottom: 0; width: 760px; }
+  .s-tal .t { position: absolute; left: 96px; top: 110px; width: 920px; }
+  .s-tal h2 { margin: 30px 0 34px; font-size: 76px; }
+  .s-tal .steps { position: absolute; left: 96px; width: 960px; bottom: 130px; display: grid; grid-template-columns: repeat(3,1fr); gap: 36px; }
+  .s-tal .steps div { border-top: 4px solid var(--orange); padding-top: 20px; }
+  .s-tal .steps b { font-family: var(--mono); font-size: 16px; color: var(--orange); font-weight: 500; }
+  .s-tal .steps h3 { margin: 6px 0 10px; }
+  .s-tal .steps p { font-size: 20px; color: var(--ink-3); }
+
+  /* Implantations */
+  .s-loc .t { position: absolute; left: 96px; right: 96px; top: 100px; display: flex; justify-content: space-between; align-items: end; }
+  .s-loc .t h2 { font-size: 72px; }
+  .s-loc .g { position: absolute; left: 96px; right: 96px; top: 380px; bottom: 120px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .s-loc .site { display: grid; grid-template-columns: 1.1fr 1fr; border: 1px solid var(--ink); }
+  .s-loc .site .in { padding: 40px; display: flex; flex-direction: column; }
+  .s-loc .tag { font-family: var(--mono); font-size: 15px; text-transform: uppercase; letter-spacing: .12em; color: var(--orange); }
+  .s-loc h3 { font-size: 54px; margin: 14px 0 12px; letter-spacing: -.03em; }
+  .s-loc .addr { margin-top: auto; font-size: 24px; }
+  .s-loc .site.dark { background: var(--ink); color: #fff; }
+
+  /* Contact */
+  .s-end .left { position: absolute; left: 0; top: 0; bottom: 0; width: 1100px; padding: 110px 96px; }
+  .s-end .left h2 { font-size: 120px; letter-spacing: -.045em; margin: 34px 0 70px; }
+  .s-end .c div { border-top: 1px solid rgba(255,255,255,.3); padding: 18px 0 30px; }
+  .s-end .c .k { font-family: var(--mono); font-size: 15px; text-transform: uppercase; letter-spacing: .12em; color: var(--orange); }
+  .s-end .c .v { font-size: 46px; font-weight: 700; letter-spacing: -.02em; margin-top: 6px; }
+  .s-end .right { position: absolute; right: 0; top: 0; bottom: 0; width: 820px; background: #fff; padding: 110px 96px; }
+  .s-end .right img { width: 380px; }
+  .s-end .right dl { position: absolute; left: 96px; right: 96px; bottom: 120px; display: grid; grid-template-columns: 230px 1fr; font-size: 17px; }
+  .s-end dt, .s-end dd { border-top: 1px solid var(--line); padding: 9px 0; }
+  .s-end dt { font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--grey); padding-top: 12px; }
+  .s-end .tile { width: 150px; left: 1025px; top: 860px; z-index: 3; font-size: 26px; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 01 -->
+<section class="slide s-cover">
+  <div class="ph"><img src="../assets/img/ingenieur-orange.jpg" alt="" style="object-position: 50% 25%"></div>
+  <div class="left on-dark">
+    <div class="logo-box"><img src="../assets/logo.png" alt="La'mons International"></div>
+    <div class="sub"><span class="eyebrow">Présentation corporate · 2026</span><div>Groupe multiservices congolais, depuis 2014.</div></div>
+    <h1>Inspired<br>to make you<br><em>successful.</em></h1>
+  </div>
+  <div class="tile"></div>
+  <div class="bar4"><i></i><i></i><i></i><i></i></div>
+  <div class="chrome light" style="right:1050px"><span>Lubumbashi · Kolwezi</span><span>RD Congo</span></div>
+</section>
+
+<!-- 02 -->
+<section class="slide s-qui">
+  <div class="ph"><img src="../assets/img/partenaires.jpg" alt="" style="object-position: 62% 40%"></div>
+  <div class="t">
+    <span class="eyebrow">01 — Qui sommes-nous</span>
+    <h2>Une entreprise congolaise au service de la réussite de ses partenaires.</h2>
+    <p class="lead">Une entreprise diversifiée, forte de solides compétences dans le commerce et les services.</p>
+    <div class="cols">
+      <p>Depuis 2014, LA'MONS INTERNATIONAL s'est imposée sur le marché des affaires et de l'emploi en RDC. Son champ d'action ne cesse de s'étendre : communication, imprimerie, environnement, sécurité, fourniture et services.</p>
+      <p>Son ambition : affirmer son expertise et sa crédibilité en Afrique centrale, et accompagner durablement ses partenaires vers le succès.</p>
+    </div>
+  </div>
+  <div class="chrome" style="left:860px"><span>La'mons International</span><span>02</span></div>
+</section>
+
+<!-- 03 -->
+<section class="slide s-num on-dark">
+  <div class="tile"></div>
+  <div class="t"><span class="eyebrow">En bref</span><h2 style="margin-top:30px">Un acteur de référence<br>du Haut-Katanga et du Lualaba.</h2></div>
+  <div class="grid">
+    <div><b>2014</b><span>Année de création, à Lubumbashi</span></div>
+    <div><b>2</b><span>Sièges : Lubumbashi et Kolwezi</span></div>
+    <div><b>12</b><span>Métiers réunis en trois pôles</span></div>
+    <div><b>24/7</b><span>Sécurité des personnes et des biens</span></div>
+  </div>
+  <div class="chrome"><span>La'mons International</span><span>03</span></div>
+</section>
+
+<!-- 04 -->
+<section class="slide s-devise on-dark">
+  <span class="eyebrow">02 — Notre devise</span>
+  <h2>Inspired to<br>make you<br><span class="o">successful.</span></h2>
+  <div class="tile"></div>
+  <p>Une exigence envers nous-mêmes, et une promesse faite à chacun des partenaires pour qui nous existons.</p>
+  <div class="chrome"><span>La'mons International</span><span>04</span></div>
+</section>
+
+<!-- 05 -->
+<section class="slide s-mission">
+  <div class="t"><div><span class="eyebrow">Notre mission</span><h2 style="margin-top:30px">Quatre engagements envers<br>nos partenaires.</h2></div></div>
+  <div class="grid">
+    <div><span class="n">01</span><h3>Accompagner</h3><p>Guider nos clients sur le chemin de la réussite, avec des solutions à tous leurs besoins.</p></div>
+    <div><span class="n">02</span><h3>Rendre accessible</h3><p>Des produits et services au juste coût, pour accroître les chances de gain de nos clients.</p></div>
+    <div><span class="n">03</span><h3>Pérenniser</h3><p>Inscrire le succès de nos partenaires dans la durée en cultivant le goût de la grandeur.</p></div>
+    <div><span class="n">04</span><h3>Servir avec excellence</h3><p>Des services de qualité, réalisés avec professionnalisme.</p></div>
+  </div>
+  <div class="obj"><span class="eyebrow">Notre objectif</span><p>Étendre notre activité à l'ensemble du continent africain et soutenir l'essor de la classe moyenne, grâce à des prestations qui satisfont pleinement nos partenaires.</p></div>
+</section>
+
+<!-- 06 -->
+<section class="slide s-col">
+  <div class="t">
+    <span class="eyebrow">03 — Couleurs & valeurs</span>
+    <h2>Quatre couleurs, trois engagements.</h2>
+    <div class="vals"><div>Construire une confiance mutuelle</div><div>Promouvoir la collaboration</div><div>Poursuivre l'excellence</div></div>
+  </div>
+  <div class="sw k"><span class="hex">#0D0D0D</span><b>Noir</b><p>La rigueur par la simplicité.</p></div>
+  <div class="sw w"><span class="hex">#FFFFFF</span><b>Blanc</b><p>L'unité, la vérité et l'intégrité.</p></div>
+  <div class="sw o"><span class="hex">#EC7B13</span><b>Orange</b><p>Le dynamisme et l'optimisme.</p></div>
+  <div class="sw r"><span class="hex">#F12062</span><b>Rose</b><p>La bienveillance et le don de soi.</p></div>
+  <div class="chrome" style="right:1180px"><span>La'mons International</span><span>06</span></div>
+</section>
+
+<!-- 07 -->
+<section class="slide s-met">
+  <div class="t"><div><span class="eyebrow">04 — Nos métiers</span><h2 style="margin-top:30px">Douze métiers, un seul interlocuteur.</h2></div><p class="muted">Miniers, industriels, administrations publiques : une même signature pour les services dont vos sites et vos équipes ont besoin.</p></div>
+  <div class="grid">
+    <div><div class="ph"><img src="../assets/img/chantier-aerien.jpg" alt=""></div><span class="n">PÔLE 01</span><h3>Industrie & infrastructures</h3><ul><li>Génie civil</li><li>Énergie · partenariat SANZ'A</li><li>Transport & logistique</li><li>Gestion des déchets</li></ul></div>
+    <div><div class="ph"><img src="../assets/img/securite.jpg" alt=""></div><span class="n">PÔLE 02</span><h3>Services aux sites</h3><ul><li>Sécurité & gardiennage</li><li>Hôtellerie & catering</li><li>Nettoyage professionnel</li><li>RH & formation</li></ul></div>
+    <div><div class="ph"><img src="../assets/img/conference.jpg" alt=""></div><span class="n">PÔLE 03</span><h3>Commerce & communication</h3><ul><li>Commerce général</li><li>Eau potable ALUMIMO</li><li>Communication & imprimerie</li><li>Événementiel & billetterie</li></ul></div>
+  </div>
+  <div class="chrome"><span>La'mons International</span><span>07</span></div>
+</section>
+
+<!-- 08 -->
+<section class="slide s-pole">
+  <div class="ph side"><img src="../assets/img/ingenieur-portrait.jpg" alt=""><div class="t"><span class="eyebrow">Pôle 01 — Industrie & infrastructures</span><h2>Bâtir, transporter, préserver.</h2></div></div>
+  <div class="body">
+    <div class="svc"><span class="n">01</span><div><h3>Génie civil</h3><p>Conception, réalisation, exploitation et réhabilitation d'ouvrages et d'infrastructures, dans le respect de la sécurité du public et de l'environnement.</p></div></div>
+    <div class="svc"><span class="n">02</span><div><h3>Transport & logistique</h3><p>Transport de personnel et de matériel, commission de transport, gestion de charroi et maîtrise d'œuvre logistique.</p></div></div>
+    <div class="svc"><span class="n">03</span><div><h3>Gestion des déchets</h3><p>Collecte, tri, acheminement et élimination des déchets ménagers, industriels et encombrants.</p></div></div>
+  </div>
+  <div class="chrome" style="left:860px"><span>La'mons International</span><span>08</span></div>
+</section>
+
+<!-- 09 -->
+<section class="slide s-nrj on-dark">
+  <div class="ph"><img src="../assets/img/pylone-rose.jpg" alt=""></div>
+  <div class="t">
+    <span class="eyebrow">Projet phare · Partenariat SANZ'A sarl</span>
+    <h2>L'énergie qui fait avancer la région.</h2>
+    <p class="lead">Production d'électricité, réseaux de distribution, ingénierie et énergies renouvelables : avec SANZ'A, nous portons des projets électriques et hydrauliques d'envergure.</p>
+  </div>
+  <div class="kpis">
+    <div><b>250 km</b><span>Ligne 220 kV Inga – Cabinda</span></div>
+    <div><b>800 000</b><span>Lampes remplacées par des LBC</span></div>
+    <div><b>30 MW</b><span>Récupérés sur le réseau</span></div>
+    <div><b>50 + 150</b><span>MVA : deux postes 220 kV</span></div>
+  </div>
+  <div class="chrome"><span>La'mons International</span><span>09</span></div>
+</section>
+
+<!-- 10 -->
+<section class="slide s-refs on-dark">
+  <div class="t"><span class="eyebrow">Références énergie</span><h2>Des réalisations concrètes.</h2><p style="color:rgba(255,255,255,.7);font-size:22px">Remplacement de sous-stations et de lignes haute tension, à toutes les phases du cycle de vie des actifs, sur tous terrains et sous tous climats.</p></div>
+  <ol>
+    <li>Aménagement du poste de Shilatembo en poste HT 120 kV et construction d'une ligne 2 × 120 kV + 1 × 11 kV, avec la société SEK</li>
+    <li>Alimentation en 220 kV de la ville de Cabinda, en Angola</li>
+    <li>Tirage de la ligne 220 kV Inga – Cabinda, sur 250 km</li>
+    <li>Construction de deux postes 220 kV, de 50 MVA et de 150 MVA</li>
+    <li>Remplacement de 800 000 lampes à incandescence à Lubumbashi, Likasi et Kolwezi : 30 MW récupérés</li>
+  </ol>
+  <p class="note">Réalisations de SANZ'A sarl, partenaire de LA'MONS INTERNATIONAL.</p>
+  <div class="chrome"><span>La'mons International</span><span>10</span></div>
+</section>
+
+<!-- 11 -->
+<section class="slide s-pole">
+  <div class="ph side"><img src="../assets/img/securite.jpg" alt=""><div class="t"><span class="eyebrow">Pôle 02 — Services aux sites</span><h2>Vos sites, protégés et entretenus.</h2></div></div>
+  <div class="body">
+    <div class="svc"><span class="n">01</span><div><h3>Sécurité</h3><p>Agents sélectionnés pour leur intégrité, matériel de nouvelle génération, unités cynophiles et protection rapprochée, 24 h/24 et 7 j/7.</p></div></div>
+    <div class="svc"><span class="n">02</span><div><h3>Hôtellerie & catering</h3><p>Bases-vie et plates-formes : logement, buanderie, restauration, sécurité et loisirs, à la carte.</p></div></div>
+    <div class="svc"><span class="n">03</span><div><h3>Nettoyage professionnel</h3><p>Entrepôts, usines, laboratoires, chantiers, hôpitaux, écoles, parkings, avec des agents permanents.</p></div></div>
+  </div>
+  <div class="chrome" style="left:860px"><span>La'mons International</span><span>11</span></div>
+</section>
+
+<!-- 12 -->
+<section class="slide s-pole compact">
+  <div class="ph side"><img src="../assets/img/eau.jpg" alt=""><div class="t"><span class="eyebrow">Pôle 03 — Commerce & communication</span><h2>Des produits authentiques, une image qui porte.</h2></div></div>
+  <div class="body">
+    <div class="svc"><span class="n">01</span><div><h3>Commerce général</h3><p>Alimentaire, pétrolier, cosmétique, vestimentaire, informatique, pharmaceutique : des produits originaux venus du monde entier.</p></div></div>
+    <div class="svc"><span class="n">02</span><div><h3>Eau potable — ALUMIMO</h3><p>Traitement selon des standards internationaux, et une qualité garantie jusqu'à la dernière gorgée.</p></div></div>
+    <div class="svc"><span class="n">03</span><div><h3>Communication & imprimerie</h3><p>Rapprocher direction, collaborateurs et consommateurs, et élargir votre influence.</p></div></div>
+    <div class="svc"><span class="n">04</span><div><h3>Événementiel & billetterie</h3><p>Organisation complète d'événements, réservation de billets simple et immédiate.</p></div></div>
+  </div>
+  <div class="chrome" style="left:860px"><span>La'mons International</span><span>12</span></div>
+</section>
+
+<!-- 13 -->
+<section class="slide s-srv">
+  <div class="t"><span class="eyebrow">La'mons Services</span><h2>Le capital humain au cœur de votre croissance.</h2><p class="muted">Sélectionner, développer et retenir les talents : l'un des grands défis des entreprises en Afrique.</p></div>
+  <div class="ph"><img src="../assets/img/reunion.jpg" alt=""></div>
+  <div class="grid">
+    <div>
+      <div class="grp"><h3>Ressources humaines <span>RH</span></h3><ul><li>Recrutement, placement, intérim</li><li>Représentation d'entreprises internationales</li><li>Gestion de la paie et bulletins</li><li>Business & employee coaching</li></ul></div>
+      <div class="grp"><h3>Formation <span>EDU</span></h3><ul><li>Gestion, éducation financière, OHADA</li><li>Langues, informatique, management</li><li>Études en Afrique du Sud</li><li>Écoles spécialisées</li></ul></div>
+    </div>
+    <div>
+      <div class="grp"><h3>Conseil & marketing <span>BIZ</span></h3><ul><li>Business plans, projets bancables</li><li>Marketing digital, e-commerce</li><li>Traduction, protocole, interprétariat</li></ul></div>
+      <div class="grp"><h3>Mobilité <span>TRV</span></h3><ul><li>Passeports, visas, permis international</li><li>Billets d'avion, fret, hôtels</li></ul></div>
+      <div class="grp"><h3>Sûreté <span>SEC</span></h3><ul><li>Protection individuelle, équipements</li></ul></div>
+    </div>
+  </div>
+  <div class="chrome"><span>La'mons International</span><span>13</span></div>
+</section>
+
+<!-- 14 -->
+<section class="slide s-tal">
+  <div class="ph"><img src="../assets/img/diplomee.jpg" alt="" style="object-position: 40% 30%"></div>
+  <div class="t"><span class="eyebrow">Création d'emplois</span><h2>Révéler la prochaine génération de talents.</h2><p class="lead" style="font-size:26px">Nous repérons les jeunes talents dans les universités nationales et internationales, et présentons leurs projets aux miniers, aux industriels et aux administrations.</p></div>
+  <div class="steps">
+    <div><b>01</b><h3>Repérer</h3><p>Dans les universités, au pays et à l'international.</p></div>
+    <div><b>02</b><h3>Stimuler</h3><p>Des concours académiques dotés de prix.</p></div>
+    <div><b>03</b><h3>Connecter</h3><p>Embauche et entrepreneuriat chez nos partenaires.</p></div>
+  </div>
+  <div class="chrome" style="right:860px"><span>La'mons International</span><span>14</span></div>
+</section>
+
+<!-- 15 -->
+<section class="slide s-loc">
+  <div class="t"><div><span class="eyebrow">Où nous trouver</span><h2 style="margin-top:30px">Au cœur du Copperbelt congolais.</h2></div><p class="muted" style="width:520px;font-size:22px">Deux implantations au plus près des sites miniers et industriels du Haut-Katanga et du Lualaba.</p></div>
+  <div class="g">
+    <div class="site"><div class="ph"><img src="../assets/img/lubumbashi.jpg" alt=""></div><div class="in"><span class="tag">Siège social</span><h3>Lubumbashi</h3><p class="muted" style="font-size:20px">Haut-Katanga</p><p class="addr">540, avenue Mweka<br>Quartier Golf</p></div></div>
+    <div class="site dark"><div class="ph"><img src="../assets/img/camion-minier.jpg" alt=""></div><div class="in"><span class="tag">Siège d'exploitation</span><h3>Kolwezi</h3><p style="font-size:20px;color:rgba(255,255,255,.6)">Lualaba</p><p class="addr">659, av. du 30 Juin<br>Commune de Manika</p></div></div>
+  </div>
+  <div class="chrome"><span>La'mons International</span><span>15</span></div>
+</section>
+
+<!-- 16 -->
+<section class="slide s-end">
+  <div class="left on-dark">
+    <span class="eyebrow">Contact</span>
+    <h2>Travaillons<br><span class="o">ensemble.</span></h2>
+    <div class="c">
+      <div><span class="k">E-mail</span><div class="v">contact@lamonsint.com</div></div>
+      <div><span class="k">Téléphone</span><div class="v">+243 99 277 8777</div></div>
+    </div>
+  </div>
+  <div class="tile"></div>
+  <div class="right">
+    <img src="../assets/logo.png" alt="La'mons International">
+    <dl>
+      <dt>Forme juridique</dt><dd>SARL — RD Congo</dd>
+      <dt>RCCM</dt><dd>CD/L'SHI/TRCCM/14-B-1769<br>CD/KZI/RCCM19-B-951</dd>
+      <dt>Id. nationale</dt><dd>6-919-N62633S</dd>
+      <dt>N° fiscal</dt><dd>A1512267B</dd>
+      <dt>CNSS · INPP</dt><dd>1012702600 · 0824.82</dd>
+      <dt>Banque</dt><dd>RAWBANK · 01002332201-33</dd>
+    </dl>
+  </div>
+</section>
+
+</div>
+
+<div class="ui progress"><i id="bar"></i></div>
+<div class="ui counter" id="count"></div>
+<div class="ui hint" id="hint">← → pour naviguer · F plein écran · P imprimer / PDF</div>
+<button class="ui navbtn prev" id="prev" aria-label="Précédent">‹</button>
+<button class="ui navbtn next" id="next" aria-label="Suivant">›</button>
+
+<script>
+(() => {
+  const deck = document.getElementById('deck');
+  const slides = [...deck.querySelectorAll('.slide')];
+  let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+  const fit = () => {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    deck.style.transform = `translate(-50%, -50%) scale(${s})`;
+  };
+  const show = n => {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('bar').style.width = ((i + 1) / slides.length * 100) + '%';
+    document.getElementById('count').textContent = String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    history.replaceState(null, '', '#' + (i + 1));
+  };
+  addEventListener('resize', fit);
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+    if (e.key.toLowerCase() === 'f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    if (e.key.toLowerCase() === 'p') print();
+  });
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+  let x0 = null;
+  addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+  addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); x0 = null; });
+  setTimeout(() => document.getElementById('hint').style.opacity = 0, 5000);
+  fit(); show(i);
+})();
+</script>
+</body>
+</html>

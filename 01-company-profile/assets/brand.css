@@ -1,0 +1,73 @@
+/* ==========================================================================
+   LA'MONS INTERNATIONAL — Charte graphique partagée (company profile)
+   Couleurs issues du logo officiel : Noir · Blanc · Orange · Rose
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,300..900;1,62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Couleurs de marque */
+  --orange: #EC7B13;      /* dynamisme, optimisme      */
+  --orange-deep: #C9650A;
+  --rose: #F12062;        /* sensibilité, harmonie     */
+  --ink: #0D0D0D;         /* rigueur, simplicité       */
+  --paper: #FFFFFF;       /* intégrité, vérité         */
+
+  /* Neutres de support */
+  --sand: #F4F0EA;
+  --sand-2: #E9E3D9;
+  --grey: #6E6A64;
+  --line: #D9D3CA;
+  --ink-2: #1B1A19;
+  --ink-3: #2A2826;
+
+  --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: var(--display); color: var(--ink); font-variation-settings: 'wdth' 100; }
+img { display: block; max-width: 100%; }
+
+/* ---------- Typo ---------- */
+.eyebrow {
+  font-family: var(--mono); font-weight: 500; text-transform: uppercase;
+  letter-spacing: .14em; display: inline-flex; align-items: center; gap: .7em;
+}
+.eyebrow::before {
+  content: ''; width: .62em; height: .62em; background: var(--orange);
+  transform: rotate(-14deg); box-shadow: .16em .16em 0 var(--rose); flex: none;
+}
+.on-dark .eyebrow { color: #fff; }
+.mono { font-family: var(--mono); }
+.wide { font-variation-settings: 'wdth' 115; }
+.cond { font-variation-settings: 'wdth' 75; }
+.o { color: var(--orange); }
+.r { color: var(--rose); }
+
+/* ---------- Motif : carré incliné du logo ---------- */
+.tile {
+  position: absolute; aspect-ratio: 1; background: var(--orange);
+  border-radius: 6%; transform: rotate(-14deg);
+  box-shadow: -1.2em 1.2em 0 var(--rose);
+}
+.tile.outline { background: transparent; border: 2px solid var(--orange); box-shadow: none; }
+
+/* ---------- Logo ---------- */
+.logo { height: auto; }
+
+/* ---------- Photo ---------- */
+.ph { background: var(--sand-2) center / cover no-repeat; position: relative; overflow: hidden; }
+.ph img { width: 100%; height: 100%; object-fit: cover; }
+.ph .cap {
+  position: absolute; left: 0; bottom: 0; background: var(--ink); color: #fff;
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: .12em;
+}
+
+/* ---------- Bandeau couleur (4 couleurs) ---------- */
+.bar4 { display: flex; height: 6px; }
+.bar4 i { flex: 1; }
+.bar4 i:nth-child(1) { background: var(--ink); }
+.bar4 i:nth-child(2) { background: var(--orange); flex: 3; }
+.bar4 i:nth-child(3) { background: var(--rose); }
+.bar4 i:nth-child(4) { background: #fff; }
